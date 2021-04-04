@@ -35,7 +35,9 @@ const init_game = (players) => {
   return Array.from(players, (x) => [x, 501]);
 };
 
-const gameLogic = (playersPoints) => {
+const Y = (f) => ((x) => x(x))((x) => f((y) => x(x)(y)));
+
+const gameLogicGen = f => ((playersPoints) => {
   [actual, ...rest] = playersPoints;
   [playerName, playerScore] = actual;
   const newPlay = JSON.parse(readline.question(`${playerName} ingrese su jugada >`));
@@ -43,14 +45,16 @@ const gameLogic = (playersPoints) => {
     ...rest,
     [playerName, ingresar_jugada(playerName, playerScore, newPlay)],
   ];
-  playersStatus.some((x) => x[1] === 0) ? printWinner(playerName) : gameLogic(playersStatus)
-};
+  playersStatus.some((x) => x[1] === 0)
+    ? printWinner(playerName)
+    : f(playersStatus);
+});
 
 // Diálogo con el simulador
 const play_game = (players) => {
   const playersPoints = init_game(players);
   console.log(`Juego inicializado con los jugadores ${players.join(", ")}.`);
-  gameLogic((playersPoints))
+  Y(gameLogicGen)(playersPoints);
 };
 
 const playersNames = readline
