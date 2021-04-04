@@ -1,7 +1,8 @@
 const readline = require("readline-sync");
 const _ = require("lodash");
 
-
+// Funcion que permite remplazar los valores de las jugadas DB y SB, por su puntaje para poder ser computado
+// Se utilizo la tecnica de Currying, para permitir la reutilizacion del codigo
 const applySpecialPlay = (name) => {
   return (points) => {
     return (play) => {
@@ -9,7 +10,7 @@ const applySpecialPlay = (name) => {
     };
   };
 };
-
+// Se istancias las funciones necesarias para poder realizar lo ya mencionado
 const applyDB = applySpecialPlay("DB")(50);
 const applySB = applySpecialPlay("SB")(25);
 
@@ -35,8 +36,10 @@ const init_game = (players) => {
   return Array.from(players, (x) => [x, 501]);
 };
 
+// Definicion del Y Generator utilizado para mantener la puresa de funciones recursivas
 const Y = (f) => ((x) => x(x))((x) => f((y) => x(x)(y)));
 
+// Se genera la funcion que maneja la logica del juego, permitiendo ser utilizada por el Y Generator
 const gameLogicGen = f => ((playersPoints) => {
   [actual, ...rest] = playersPoints;
   [playerName, playerScore] = actual;
