@@ -19,16 +19,15 @@ const printWinner = (playerName) => {
 };
 
 // Una función que reciba el nombre del jugador, su puntaje y sus lanzamientos y devuelva el nuevo score del jugador
-const ingresar_jugada = (name, score, shots) => {  
-  const turnScore = _
-    .chain(shots)
+const ingresar_jugada = (name, score, shots) => {
+  const turnScore = _.chain(shots)
     .map((shot) => applySB(applyDB(shot)))
     .map((shot) => shot[0] * shot[1])
     .reduce((accumulator, currentValue) => accumulator + currentValue)
     .value();
   const updatedScore = Math.abs(score - turnScore);
   console.log(`${name} queda con ${updatedScore} puntos.`);
-  return updatedScore
+  return updatedScore;
 };
 
 // Una función que inicializa el juego dejando a cada jugador con 501 puntos
@@ -40,10 +39,12 @@ const init_game = (players) => {
 const Y = (f) => ((x) => x(x))((x) => f((y) => x(x)(y)));
 
 // Se genera la funcion que maneja la logica del juego, permitiendo ser utilizada por el Y Generator
-const gameLogicGen = f => ((playersPoints) => {
+const gameLogicGen = (f) => (playersPoints) => {
   [actual, ...rest] = playersPoints;
   [playerName, playerScore] = actual;
-  const newPlay = JSON.parse(readline.question(`${playerName} ingrese su jugada >`));
+  const newPlay = JSON.parse(
+    readline.question(`${playerName} ingrese su jugada >`)
+  );
   const playersStatus = [
     ...rest,
     [playerName, ingresar_jugada(playerName, playerScore, newPlay)],
@@ -51,7 +52,7 @@ const gameLogicGen = f => ((playersPoints) => {
   playersStatus.some((x) => x[1] === 0)
     ? printWinner(playerName)
     : f(playersStatus);
-});
+};
 
 // Diálogo con el simulador
 const play_game = (players) => {
@@ -65,4 +66,3 @@ const playersNames = readline
   .split(",");
 
 play_game(playersNames);
-
